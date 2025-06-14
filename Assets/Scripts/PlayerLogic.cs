@@ -23,6 +23,7 @@ public class PlayerLogic : MonoBehaviour
     public float flashDelay = 0.1f;
     private bool isInvincible = false;
     public GameObject GameOverPanel;
+    public GameObject WinPanel;
 
     void Start()
     {
@@ -54,6 +55,7 @@ public class PlayerLogic : MonoBehaviour
         if (isInvincible) return;
 
         Health -= damage;
+        UpdateHealth();
 
         if (Health <= 0)
         {
@@ -121,7 +123,12 @@ public class PlayerLogic : MonoBehaviour
         }
         if (other.gameObject.CompareTag("Enemy"))
         {
-           TakeDamage(1);
+            TakeDamage(1);
+        }
+        if (other.gameObject.CompareTag("Finish"))
+        {
+            Time.timeScale = 0;
+            WinPanel.SetActive(true);
         }
     }
 

@@ -99,21 +99,23 @@ public class PlayerLogic : MonoBehaviour
 
         if (other.gameObject.CompareTag("Horilka"))
         {
-            Score++;
             Destroy(other.gameObject);
+            Score++;
             UpdateText();
         }
 
         if (other.gameObject.CompareTag("Speed"))
         {
-            MoveSpeed = MoveSpeed * 2;
+            MoveSpeed = 10;
             Destroy(other.gameObject);
+            StartCoroutine(SpeedTimer());
         }
 
         if (other.gameObject.CompareTag("Jump"))
         {
-            JumpForce = JumpForce + 2;
+            JumpForce = 14;
             Destroy(other.gameObject);
+            StartCoroutine(JumpTimer());
         }
 
         if (other.gameObject.CompareTag("Health"))
@@ -130,7 +132,24 @@ public class PlayerLogic : MonoBehaviour
             Time.timeScale = 0;
             WinPanel.SetActive(true);
         }
+        if (other.gameObject.CompareTag("Death"))
+        {
+            Time.timeScale = 0;
+            GameOverPanel.SetActive(true);
+        }
     }
+
+    IEnumerator SpeedTimer()
+{
+    yield return new WaitForSeconds(10f);
+    MoveSpeed = 5;
+}
+
+IEnumerator JumpTimer()
+{
+    yield return new WaitForSeconds(10f);
+    JumpForce = 10;
+}
 
     public void UpdateText()
     {

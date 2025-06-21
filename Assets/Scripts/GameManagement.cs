@@ -18,6 +18,23 @@ public class GameManagement : MonoBehaviour
         Time.timeScale = 1;
     }
 
+    public void RestartTwo()
+    {
+        SceneManager.LoadScene(2);
+        Time.timeScale = 1;
+    }
+
+    public void ContinueTwo()
+    {
+        SceneManager.LoadScene(3);
+        Time.timeScale = 1;
+    }
+
+    public void RestartThree()
+    {
+        SceneManager.LoadScene(3);
+        Time.timeScale = 1;
+    }
     public void Menu()
     {
         SceneManager.LoadScene(0);

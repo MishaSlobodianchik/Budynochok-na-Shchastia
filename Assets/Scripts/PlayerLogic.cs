@@ -15,15 +15,35 @@ public class PlayerLogic : MonoBehaviour
     public bool isGrounded;
     public int jumpCount = 1;
     public int Score = 0;
+    public int Goal;
     public SpriteRenderer spriteRenderer;
     public Text ScoreText;
     public Text HealthText;
+    public Text GoalText;
     public bool canTakeDamage = true;
     public float invincibilityDuration = 3f;
     public float flashDelay = 0.1f;
     private bool isInvincible = false;
     public GameObject GameOverPanel;
     public GameObject WinPanel;
+    public GameObject PausePanel;
+    public GameObject PauseButton;
+
+    public AudioSource audioSource;
+
+    public AudioClip HorilkaSound;
+    public AudioClip DamageSound;
+    public AudioClip HealSound;
+    public AudioClip PowerUpSound;
+    public AudioClip WinSound;
+    public AudioClip JumpSound;
+
+    public void PlayHorilka() => audioSource.PlayOneShot(HorilkaSound);
+    public void PlayDamage() => audioSource.PlayOneShot(DamageSound);
+    public void PlayHeal() => audioSource.PlayOneShot(HealSound);
+    public void PlayPowerUp() => audioSource.PlayOneShot(PowerUpSound);
+    public void PlayWin() => audioSource.PlayOneShot(WinSound);
+    public void PlayJump() => audioSource.PlayOneShot(JumpSound);
 
     void Start()
     {
@@ -41,12 +61,17 @@ public class PlayerLogic : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.W) && jumpCount > 0)
         {
             rb.velocity = new Vector2(rb.velocity.x, JumpForce);
+            PlayJump();
             jumpCount--;
         }
 
         if (rb.velocity.y == 0)
         {
             jumpCount = 1;
+        }
+        if (Score == Goal)
+        {
+            GoalText.color = new Color32(31, 152, 10, 225);
         }
     }
 
@@ -55,12 +80,14 @@ public class PlayerLogic : MonoBehaviour
         if (isInvincible) return;
 
         Health -= damage;
+        PlayDamage();
         UpdateHealth();
 
         if (Health <= 0)
         {
             Time.timeScale = 0;
             GameOverPanel.SetActive(true);
+            PauseButton.SetActive(false);
         }
         else
         {
@@ -101,6 +128,7 @@ public class PlayerLogic : MonoBehaviour
         {
             Destroy(other.gameObject);
             Score++;
+            PlayHorilka();
             UpdateText();
         }
 
@@ -108,6 +136,7 @@ public class PlayerLogic : MonoBehaviour
         {
             MoveSpeed = 10;
             Destroy(other.gameObject);
+            PlayPowerUp();
             StartCoroutine(SpeedTimer());
         }
 
@@ -115,6 +144,7 @@ public class PlayerLogic : MonoBehaviour
         {
             JumpForce = 14;
             Destroy(other.gameObject);
+            PlayPowerUp();
             StartCoroutine(JumpTimer());
         }
 
@@ -122,6 +152,8 @@ public class PlayerLogic : MonoBehaviour
         {
             Health++;
             Destroy(other.gameObject);
+            PlayHeal();
+            UpdateHealth();
         }
         if (other.gameObject.CompareTag("Enemy"))
         {
@@ -131,11 +163,15 @@ public class PlayerLogic : MonoBehaviour
         {
             Time.timeScale = 0;
             WinPanel.SetActive(true);
+            PauseButton.SetActive(false);
+            PlayWin();
         }
         if (other.gameObject.CompareTag("Death"))
         {
             Time.timeScale = 0;
             GameOverPanel.SetActive(true);
+            PauseButton.SetActive(false);
+            PlayDamage();
         }
     }
 
@@ -159,5 +195,17 @@ IEnumerator JumpTimer()
     {
         HealthText.text = Health.ToString();
     }
+    public void Pause()
+    {
+        Time.timeScale = 0;
+        PausePanel.SetActive(true);
+        PauseButton.SetActive(false);
 
+    }
+    public void Continue()
+    {
+        Time.timeScale = 1;
+        PausePanel.SetActive(false);
+        PauseButton.SetActive(true);
+    }
 }

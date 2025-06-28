@@ -4208,9 +4208,9 @@ TextureImporter:
       name: TX Village Props - Seesaw 01 Board
       rect:
         serializedVersion: 2
-        x: 27
+        x: 32
         y: 230
-        width: 138
+        width: 128
         height: 7
       alignment: 9
       pivot: {x: 0.5, y: 0.42857143}
